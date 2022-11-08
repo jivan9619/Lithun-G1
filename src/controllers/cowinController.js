@@ -1,12 +1,21 @@
 let axios = require("axios");
 
 exports.getsessinBydistId = async (req, res) => {
-  const { district_id, date } = req.query;
-  console.log(district_id, date);
-  const data = await axios.get(
-    `https://cdn-api.co-vin.in/v2/appointment/sessions/public/findByDistrict?district_id=${district_id}&date=${date}`
-  );
-  console.log(data.data);
+  try {
+    const { district_id, date } = req.query;
+    const data = await axios.get(
+      `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id=${district_id}&date=${date}`
+    );
+    res.status(200).json({
+      status: "succuss",
+      data: data.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "server error",
+      error,
+    });
+  }
 };
 
 // let getStates = async function (req, res) {
