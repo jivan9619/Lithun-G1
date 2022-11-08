@@ -5,12 +5,15 @@ class controler {
   createUser = async (req, res, next) => {
     try {
       const users = await userModel.create(req.body);
-      res.status(200).json({
+
+      // RESPONSE WITH 201 FOR SUCCUSSFUL CREATION OF RECORD
+      res.status(201).json({
         status: "succuss",
         result: `${users.length ? users.length : 1} user added to data base!!`,
       });
     } catch (error) {
-      res.status(404).json({
+      // RESPONSE WITH SERVER ERROR
+      res.status(500).json({
         status: "fail",
         msg: error,
       });
@@ -18,41 +21,93 @@ class controler {
   };
 
   // LOGIN OF USER IS IMPLIMENTATION
-  loginUser = async (req, res, next) => {
+  loginUser = (req, res, next) => {
     // GENERATING JWT TOKEN
-    const Token = jwt.sign(req.body, process.env.JWT_SEC_CODE, {
-      expiresIn: process.env.JWT_EXPIRE_IN,
-    });
-    res.status(200).json({
-      status: "succuss",
-      Token,
-    });
+
+    try {
+      // IF REQ.BODY IS NOT EMPTY
+      if (Object.keys(req.body) !== 0) {
+        const Token = jwt.sign(req.body, process.env.JWT_SEC_CODE, {
+          expiresIn: process.env.JWT_EXPIRE_IN,
+        });
+        // SENDING RESPONSE WITH 201 FOR SUCCUSSFUL TOKEN GENERATION
+        res.status(201).json({
+          status: "succuss",
+          Token,
+        });
+      }
+    } catch (error) {
+      // SENDING WITH ERROR 403 FOR TOKEN GENERATION
+      res.status(403).json({
+        status: "fail",
+        msg: "Token generatin falis",
+      });
+    }
   };
 
   // GETTING USER DETAILS AFTER USER VERIFICATION
   getUserDetails = async (req, res, next) => {
-    const user = await userModel.findById(req.params.id);
-    res.send(user);
+    try {
+      // CHEKING IF ID IS EMPTY
+      if (Object.keys(req.params.id) != 0) {
+        const user = await userModel.findById(req.params.id);
+        res.status(200).json({
+          status: "succuss",
+          data: user,
+        });
+      }
+    } catch (error) {
+      // SENDING ERROR IF USER NOT FOUND
+      res.status(404).json({
+        status: "User not found!",
+        error,
+      });
+    }
   };
 
   // UPDATING USER DETAILS
   updateUserDetails = async (req, res, next) => {
-    const status = await userModel.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    res.send(status);
+    try {
+      if (Object.keys(req.params.id).length && Object.keys(req.body)) {
+        const status = await userModel.findByIdAndUpdate(
+          req.params.id,
+          req.body,
+          {
+            new: true,
+          }
+        );
+        res.status(200).json({
+          status: "succuss",
+          data: status,
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        status: "fail",
+        error,
+      });
+    }
   };
 
   //DELETING USER
   deleteUser = async (req, res, next) => {
-    await userModel.findByIdAndUpdate(
-      req.params.id,
-      { isDeleated: true },
-      { new: true }
-    );
-    res.status(200).json({
-      status: "Deletion succuss!",
-    });
+    try {
+      if (Object.keys(req.params.id).length) {
+        await userModel.findByIdAndUpdate(
+          req.params.id,
+          { isDeleated: true },
+          { new: true }
+        );
+        res.status(200).json({
+          status: "Deletion succuss!",
+        });
+      }
+    } catch (error) {
+      res.status(500).json({
+        status: "Server Error",
+        error,
+      });
+    }
   };
 }
 
