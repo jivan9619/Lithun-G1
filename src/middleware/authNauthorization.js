@@ -1,6 +1,6 @@
 const userModel = require("../models/userModel");
 const jwt = require("jsonwebtoken");
-
+const bcrypt = require("bcrypt");
 // AUTHORIZATION CHECK
 exports.authorizectionCheck = (req, res, next) => {
   try {
@@ -34,9 +34,16 @@ exports.authCheck = async (req, res, next) => {
   try {
     // CORNER CASE IF BODY IS EMPTY
     if (Object.keys(req.body).length) {
-      const user = await userModel.findOne(req.body);
-      // IF USER FOUND
-      if (user) {
+      // FINDING USER HASH PASSWORD
+      const user = await userModel
+        .findOne({ email: req.body.emailId })
+        .select("password");
+
+      // COMPARING THE PASSWORD WITH BCRYPT COMPARE METHOD
+      const password = await bcrypt.compare(req.body.password, user.password);
+
+      // IF PASSWORD MATCH
+      if (password) {
         // ADDING MONGOOSE _ID TO BODY FOR VERIFICATION OF TOKEN
         req.body.id = user._id;
         next();

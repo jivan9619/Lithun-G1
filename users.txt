@@ -1,6 +1,7 @@
 [
   {
     "password":"Sincere@92998",
+    "confirmPassword":"Sincere@92998",
     "gender":"female",
     "age":32,
     "name": "Leanne Graham",
@@ -21,6 +22,7 @@
   },
   {
     "password":"Shanna90566",
+    "confirmPassword":"Shanna90566",
     "gender":"male",
     "age":41,
     "name": "Ervin Howell",
@@ -41,6 +43,7 @@
   },
   {
     "password":"Nathan59590",
+    "confirmPassword":"Nathan59590",
     "gender":"male",
     "age":25,
     "name": "Clementine Bauch",
@@ -61,6 +64,7 @@
   },
   {
     "password":"Julianne53919",
+    "confirmPassword":"Julianne53919",
     "gender":"female",
     "age":39,
     "name": "Patricia Lebsack",
@@ -81,6 +85,7 @@
   },
   {
     "password":"Lucio_Hettinger33263",
+    "confirmPassword":"Lucio_Hettinger33263",
     "gender":"male",
     "age":53,
     "name": "Chelsey Dietrich",
@@ -101,6 +106,7 @@
   },
   {
     "password":"Karley_Dach@jasper23505",
+    "confirmPassword":"Karley_Dach@jasper23505",
     "gender":"female",
     "age":28,
     "name": "Mrs. Dennis Schulist",
@@ -121,6 +127,7 @@
   },
   {
     "password":"Telly.Hoeger58804",
+    "confirmPassword":"Telly.Hoeger58804",
     "gender":"male",
     "age":22,
     "name": "Kurtis Weissnat",
@@ -141,6 +148,7 @@
   },
   {
     "password":"Sherwood45169",
+    "confirmPassword":"Sherwood45169",
     "gender":"male",
     "age":37,
     "name": "Nicholas Runolfsdottir V",
@@ -161,6 +169,7 @@
   },
   {
     "password":"Chaim_McDermott@76495",
+    "confirmPassword":"Chaim_McDermott@76495",
     "gender":"male",
     "age":30,
     "name": "Glenna Reichert",
@@ -181,6 +190,7 @@
   },
   {
     "password":"Rey.Padberg31428",
+    "confirmPassword":"Rey.Padberg31428",
     "gender":"female",
     "age":28,
     "name": "Clementina DuBuque",
