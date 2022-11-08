@@ -4,13 +4,21 @@ class controler {
   // CREATING USER DATA
   createUser = async (req, res, next) => {
     try {
-      const users = await userModel.create(req.body);
+      if (Object.keys(req.body) !== 0) {
 
-      // RESPONSE WITH 201 FOR SUCCUSSFUL CREATION OF RECORD
-      res.status(201).json({
-        status: "succuss",
-        result: `${users.length ? users.length : 1} user added to data base!!`,
-      });
+        const users = await userModel.create(req.body);
+
+        // RESPONSE WITH 201 FOR SUCCUSSFUL CREATION OF RECORD
+        res.status(201).json({
+          status: "succuss",
+          result: `${users.length ? users.length : 1} user added to data base!!`,
+        });
+      } else {
+        res.status(400).json({
+          status: "fail",
+          msg: "Invalid request!!"
+        })
+      }
     } catch (error) {
       // RESPONSE WITH SERVER ERROR
       res.status(500).json({
@@ -35,6 +43,11 @@ class controler {
           status: "succuss",
           Token,
         });
+      } else {
+        res.status(400).json({
+          status: "fail",
+          msg: "Invalid request!!",
+        });
       }
     } catch (error) {
       // SENDING WITH ERROR 403 FOR TOKEN GENERATION
@@ -54,6 +67,11 @@ class controler {
         res.status(200).json({
           status: "succuss",
           data: user,
+        });
+      } else {
+        res.status(400).json({
+          status: "fail",
+          msg: "Invalid request!!",
         });
       }
     } catch (error) {
@@ -80,6 +98,11 @@ class controler {
           status: "succuss",
           data: status,
         });
+      } else {
+        res.status(400).json({
+          status: "fail",
+          msg: "Invalid request!!",
+        });
       }
     } catch (error) {
       res.status(500).json({
@@ -100,6 +123,11 @@ class controler {
         );
         res.status(200).json({
           status: "Deletion succuss!",
+        });
+      } else {
+        res.status(400).json({
+          status: "fail",
+          msg: "Invalid request!!",
         });
       }
     } catch (error) {

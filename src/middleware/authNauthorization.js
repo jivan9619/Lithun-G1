@@ -9,7 +9,7 @@ exports.authorizectionCheck = (req, res, next) => {
       req.headers.authorization,
       process.env.JWT_SEC_CODE
     );
-// CHEKING THE ID WITH JWT AND FROM REQ BODY      
+    // CHEKING THE ID WITH JWT AND FROM REQ BODY
     if (req.params.id === decode.id) {
       next();
     } else {
@@ -46,6 +46,11 @@ exports.authCheck = async (req, res, next) => {
           msg: "details dose not match!!",
         });
       }
+    } else {
+      res.status(400).json({
+        status: "fail",
+        msg: "Invalid request!!",
+      });
     }
   } catch (error) {
     // SENDING RESPONSE FOR INVALID CRENDIANTIALS
