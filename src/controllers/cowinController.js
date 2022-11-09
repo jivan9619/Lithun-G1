@@ -18,6 +18,58 @@ exports.getsessinBydistId = async (req, res) => {
   }
 };
 
+exports.getWeatherDetails = async (req, res) => {
+  try {
+    const specialQuery = req.query.special;
+    const query = req.query.country;
+    const units = "units=metric";
+    const apikey = process.env.WEBAPI;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apikey}&${units}`;
+    const data = await axios.get(url);
+    const weather = data.data;
+    const Temp = data.data.main.temp;
+    let weatherRepot;
+    if (specialQuery === "temp") {
+      weatherRepot = Temp;
+    } else {
+      weatherRepot = weather;
+    }
+    res.status(200).json({
+      status: "succuss",
+      report: `${
+        specialQuery === "undefine" ? "weather" : specialQuery
+      } in ${query} is: `,
+      weatherRepot,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      error,
+    });
+  }
+};
+
+exports.getWeatherMultiple = async (req, res) => {
+  const citys = req.body;
+  const Obj = {};
+  const units = "units=metric";
+  const apikey = process.env.WEBAPI;
+  res.send("Multiple!");
+};
+
+exports.getAllMeems = async (req, res) => {
+  const data = await axios.get("https://api.imgflip.com/get_memes");
+  res.send(data.data);
+};
+exports.getMeems = async (req, res) => {
+  console.log(req.query);
+  const data = await axios.post(
+    "https://api.imgflip.com/caption_image",
+    req.query
+  );
+  console.log(data);
+  res.send("data.data");
+};
 // let getStates = async function (req, res) {
 
 //     try {
