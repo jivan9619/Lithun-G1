@@ -1,16 +1,21 @@
 let axios = require("axios");
 
+// GETTING VASSICATION SLOT AVALIABLITY BY DISTRICT ID AND DATE
 exports.getsessinBydistId = async (req, res) => {
   try {
+    // DESTRUCTING DISTRICT ID AND DATE
     const { district_id, date } = req.query;
+    // GETTING DATA BY AXIOS GET REQUEST
     const data = await axios.get(
       `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByDistrict?district_id=${district_id}&date=${date}`
     );
+    // SENDING DATA WITH STATUS CODE 200 OKAY
     res.status(200).json({
       status: "succuss",
       data: data.data,
     });
   } catch (error) {
+    // IF ANY ERROR SENDING SEREVER ERROR WITH STATUS CODE 500
     res.status(500).json({
       status: "server error",
       error,
@@ -18,15 +23,23 @@ exports.getsessinBydistId = async (req, res) => {
   }
 };
 
+// GET WEATHER DATA FOR A PERTICULAR CITY
 exports.getWeatherDetails = async (req, res) => {
   try {
+    // SPECIAL QUERY LIKE TEMP
     const specialQuery = req.query.special;
-    const query = req.query.country;
+    // CITY NAME FROM QUERY PARAMS
+    const query = req.query.city;
+    // USING UNITS IN METRIC
     const units = "units=metric";
+    // GETTING API KEY FROM CONFIG FILE
     const apikey = process.env.WEBAPI;
+    // CREATING URL
     const url = `https://api.openweathermap.org/data/2.5/weather?q=${query}&appid=${apikey}&${units}`;
+    // GET REQUEST TO FETCH DATA
     const data = await axios.get(url);
     const weather = data.data;
+    // TEMP EXTRACTION
     const Temp = data.data.main.temp;
     let weatherRepot;
     if (specialQuery === "temp") {
@@ -34,6 +47,7 @@ exports.getWeatherDetails = async (req, res) => {
     } else {
       weatherRepot = weather;
     }
+    // SENDING RESPONSE WITH STATUS CODE 200 OKAY
     res.status(200).json({
       status: "succuss",
       report: `${
@@ -49,104 +63,83 @@ exports.getWeatherDetails = async (req, res) => {
   }
 };
 
+//  GET WEATHER DATA OF MULTIPLE CITYS
 exports.getWeatherMultiple = async (req, res) => {
-  const citys = req.body;
-  const Obj = {};
-  const units = "units=metric";
-  const apikey = process.env.WEBAPI;
-  res.send("Multiple!");
+  try {
+    // CITY ARRAY
+    const cityes = [
+      "Bengaluru",
+      "Mumbai",
+      "Delhi",
+      "Kolkata",
+      "Chennai",
+      "London",
+      "Moscow",
+    ];
+    const units = "units=metric";
+    const apikey = process.env.WEBAPI;
+    // USING PROMICE ALL TO MAP ALL CITYS WHICH RETURN ARRAY OF ALL REQUESTES
+    let answer = await Promise.all(
+      // USING ASYNC MAP FUNCTION
+      cityes.map(async (city) => {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apikey}&${units}`;
+        // GETTING DATA OF EACH CITY
+        const data = await axios.get(url);
+        // EXTRACTING TEMP FROM DATA
+        const Temp = data.data.main.temp;
+        // RETURNING OBJECT WITH CITY NAME AND TEMP OF CITY
+        return { city: city, Temp: Temp };
+      })
+    );
+    // SORTING RESULTING ARRAY WITH DECENDING TEMP
+    answer.sort((a, b) => {
+      return a.Temp - b.Temp;
+    });
+    //
+    res.status(200).json({
+      status: "succuss",
+      result: answer,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      error,
+    });
+  }
 };
 
+// GET ALL MEEMS
 exports.getAllMeems = async (req, res) => {
-  const data = await axios.get("https://api.imgflip.com/get_memes");
-  res.send(data.data);
+  try {
+    const data = await axios.get("https://api.imgflip.com/get_memes");
+    res.status(200).json({
+      status: "succuss",
+      result: data.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      error,
+    });
+  }
 };
+
+// CREATE MEEMS BY AXIOS POST METHOD
 exports.getMeems = async (req, res) => {
-  console.log(req.query);
-  const data = await axios.post(
-    "https://api.imgflip.com/caption_image",
-    req.query
-  );
-  console.log(data);
-  res.send("data.data");
+  try {
+    const { a, b, c, d, e } = req.body;
+    const data = await axios(
+      `https://api.imgflip.com/caption_image?template_id=${a}&text0=${b}&text1=${c}&username=${d}&password=${e}`
+    );
+    res.status(200).json({
+      status: "succuss",
+      result: data.data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "fail",
+      error,
+    });
+  }
+  //EXTRACTING template_id AS a, text0 AS b, text1 AS c, username AS d, password AS e
 };
-// let getStates = async function (req, res) {
-
-//     try {
-//         let options = {
-//             method: 'get',
-//             url: 'https://cdn-api.co-vin.in/api/v2/admin/location/states'
-//         }
-//         let result = await axios(options);
-//         console.log(result)
-//         let data = result.data
-//         res.status(200).send({ msg: data, status: true })
-//     }
-//     catch (err) {
-//         console.log(err)
-//         res.status(500).send({ msg: err.message })
-//     }
-// }
-
-// let getDistricts = async function (req, res) {
-//     try {
-//         let id = req.params.stateId
-//         let options = {
-//             method: "get",
-//             url: `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${id}`
-//         }
-//         let result = await axios(options);
-//         console.log(result)
-//         let data = result.data
-//         res.status(200).send({ msg: data, status: true })
-//     }
-//     catch (err) {
-//         console.log(err)
-//         res.status(500).send({ msg: err.message })
-//     }
-// }
-
-// let getByPin = async function (req, res) {
-//     try {
-//         let pin = req.query.pincode
-//         let date = req.query.date
-//         console.log(`query params are: ${pin} ${date}`)
-//         var options = {
-//             method: "get",
-//             url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=${pin}&date=${date}`
-//         }
-//         let result = await axios(options)
-//         console.log(result.data)
-//         res.status(200).send({ msg: result.data })
-//     }
-//     catch (err) {
-//         console.log(err)
-//         res.status(500).send({ msg: err.message })
-//     }
-// }
-
-// let getOtp = async function (req, res) {
-//     try {
-//         let blahhh = req.body
-
-//         console.log(`body is : ${blahhh} `)
-//         var options = {
-//             method: "post",
-//             url: `https://cdn-api.co-vin.in/api/v2/auth/public/generateOTP`,
-//             data: blahhh
-//         }
-
-//         let result = await axios(options)
-//         console.log(result.data)
-//         res.status(200).send({ msg: result.data })
-//     }
-//     catch (err) {
-//         console.log(err)
-//         res.status(500).send({ msg: err.message })
-//     }
-// }
-
-// module.exports.getStates = getStates
-// module.exports.getDistricts = getDistricts
-// module.exports.getByPin = getByPin
-// module.exports.getOtp = getOtp
